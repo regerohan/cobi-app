@@ -6,8 +6,8 @@
     "apiURL": "https://dwd.tudelft.nl/bucket/api",
     "authCodeFlow": {
         "issuer": "https://dwd.tudelft.nl:443/",
-        "redirectUri": "https://jackybourgeois.github.io/cobi-app",
-        "postLogoutRedirectUri": "https://jackybourgeois.github.io/cobi-app",
+        "redirectUri": "https://datacentricdesign.github.io/cobi-app",
+        "postLogoutRedirectUri": "https://datacentricdesign.github.io/cobi-app",
         "clientId": "clients:cobi-app",
         "responseType": "code",
         "scope": "openid offline profile email dcd:public dcd:things dcd:properties",

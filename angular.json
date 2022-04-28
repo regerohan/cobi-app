@@ -48,7 +48,7 @@
                   "with": "src/assets/prod.config.json"
                 }
               ],
-              "baseHref": "https://jackybourgeois.github.io/cobi-app/"
+              "baseHref": "https://datacentricdesign.github.io/cobi-app/"
             }
           }
         },
