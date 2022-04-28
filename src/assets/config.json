@@ -8,7 +8,7 @@
         "issuer": "https://dwd.tudelft.nl:443/",
         "redirectUri": "http://localhost:4200/cobi-app",
         "postLogoutRedirectUri": "http://localhost:4200/cobi-app",
-        "clientId": "clients:myapp",
+        "clientId": "clients:cobi-app",
         "responseType": "code",
         "scope": "openid offline profile email dcd:public dcd:things dcd:properties",
         "useSilentRefresh": false,

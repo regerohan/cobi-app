@@ -13,7 +13,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --serve-path=/myapp/ -o",
+    "start": "ng serve --serve-path=/cobi-app/ -o",
     "build": "ng build",
     "build:gh": "ng build --configuration production",
     "ngh": "ngh --dir=dist/cobi-app",
