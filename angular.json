@@ -11,7 +11,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "baseHref": "http://localhost:4200/cobi-app/",
+            "baseHref": "https://datacentricdesign.github.io/cobi-app",
             "outputPath": "dist/cobi-app",
             "index": "src/index.html",
             "main": "src/main.ts",
