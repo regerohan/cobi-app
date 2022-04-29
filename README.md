@@ -1,4 +1,8 @@
-# DCD Lab Angular Template
+# COBI App
+
+An Angular app to run as a COBI module (Bosch eBike motors) sending data to Bucket.
+
+Available on GitHub Pages: [https://datacentricdesign.github.io/cobi-app](https://datacentricdesign.github.io/cobi-app)
 
 Requirements: NodeJS
 
@@ -11,7 +15,7 @@ npm install
 npm start
 ```
 
-Go to [http://localhost:4200/myapp](http://localhost:4200/myapp) to see the app in action.
+Go to [http://localhost:4200/cobi-app](http://localhost:4200/cobi-app) to see the app in action.
 
 ## What's in it?
 
@@ -42,7 +46,14 @@ We will send back to you a setting to update src/config.json. You might also sea
 
 ## Deployment
 
-For deployment, we suggest serving your app with Nginx in a Docker container.
+### GitHub Pages
+
+```sh
+npm run build:gh
+npm run ngh
+```
+
+### Nginx / Docker
 
 - Install Docker and Docker compose on your server
 - Clone your app repository on your server

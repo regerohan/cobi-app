@@ -1,7 +1,7 @@
 {
-  "name": "@datacentricdesign/angular-template",
+  "name": "@datacentricdesign/cobi-app",
   "version": "0.1.3",
-  "description": "Angular template web application for the Data-Centric Design Lab.",
+  "description": "An Angular app to run as a COBI module (Bosch eBike motors) sending data to Bucket.",
   "homepage": "https://github.com/datacentricdesign/angular-template",
   "bugs": {
     "url": "https://github.com/datacentricdesign/angular-template/issues"
