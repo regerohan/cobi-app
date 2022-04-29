@@ -29,6 +29,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.debug("Init App Component.");
   }
 
   private configureCodeFlow() {
