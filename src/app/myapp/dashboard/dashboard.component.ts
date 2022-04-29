@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
             }
             );
 
-        this.cobiThing = await this.getCobiThing();
+        this.cobiThing = await this.getOrInitialiseCobiThing();
         console.log(this.cobiThing)
         for (let i = 0; i < this.cobiThing.properties.length; i++) {
             switch (this.cobiThing.properties[i].type.id) {
@@ -63,27 +63,34 @@ export class DashboardComponent implements OnInit {
             speedElem.innerHTML = '-'
             COBI.rideService.speed.subscribe((speed: number) => {
                 speedElem.innerHTML = speed.toFixed(2);
-                this.speedValues.push([Date.now(),speed]);
+                this.speedValues.push([Date.now(), speed]);
             });
 
             const userPowerElem: HTMLElement = document.getElementById('user-power');
             userPowerElem.innerHTML = '-'
-            COBI.rideService.userPower.subscribe(function (userPower: number) {
+            COBI.rideService.userPower.subscribe((userPower: number) => {
                 userPowerElem.innerHTML = userPower.toFixed(2);
-                this.userPowerValues.push([Date.now(),userPower]);
+                this.userPowerValues.push([Date.now(), userPower]);
             })
         })
     }
 
-    async getCobiThing(): Promise<Thing> {
+    /**
+     * Search for a Thing of type COBI and create it if necessary.
+     * Check that the relevant properties are available in the Thing,
+     * and create the properties when necessary.
+     */
+    async getOrInitialiseCobiThing(): Promise<Thing> {
+        // Get the list of all things
         const things = await this.bucketService.find();
-
-        let cobiThing;
+        // Search for a Thing of type COBI
+        let cobiThing: Thing;
         for (let i = 0; i < things.length; i++) {
             if (things[i].type === 'COBI') {
-                cobiThing = Promise.resolve(things[i]);
+                cobiThing = things[i];
             }
         }
+        // If none found, create a Thing
         if (cobiThing === undefined) {
             const thingToCreate = {
                 name: 'Cobi',
@@ -92,24 +99,28 @@ export class DashboardComponent implements OnInit {
             }
             cobiThing = await this.bucketService.createThing(thingToCreate)
         }
-        
+
+        // If no attribute 'properties', init with empty array
         if (cobiThing.properties === undefined) {
             cobiThing.properties = []
         }
 
+        // For all necessary property types
         const propertyIDs = ['SPEED', 'TORQUE']
-        for (let i=0;i<propertyIDs.length;i++) {
+        for (let i = 0; i < propertyIDs.length; i++) {
+            // Look for them in the Thing
             let found = false;
-            for (let j=0;j<cobiThing.properties.length;j++) {
-                if (cobiThing.properties[j].type.id === propertyIDs[i] ) {
+            for (let j = 0; j < cobiThing.properties.length; j++) {
+                if (cobiThing.properties[j].type.id === propertyIDs[i]) {
                     found = true;
                 }
             }
+            // Otherwise, create a new property for this type.
             if (!found) {
                 cobiThing.properties.push(await this.bucketService.createProperty(cobiThing.id, { typeId: propertyIDs[i] }))
             }
         }
-        
+        // return the COBI Thing with the necessary properties.
         return Promise.resolve(cobiThing)
     }
 
