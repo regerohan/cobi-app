@@ -15,9 +15,12 @@ declare let COBI: any;
 export class DashboardComponent implements OnInit {
 
     private cobiThing: Thing;
+
     private speedProperty: Property;
+    private userPowerProperty: Property;
 
     private speedValues: number[][] = [];
+    private userPowerValues: number[][] = [];
 
     constructor(private route: ActivatedRoute,
         private scriptService: ScriptService,
@@ -46,6 +49,9 @@ export class DashboardComponent implements OnInit {
             switch (this.cobiThing.properties[i].type.id) {
                 case 'SPEED':
                     this.speedProperty = this.cobiThing.properties[i];
+                    break;
+                case 'TORQUE':
+                    this.userPowerProperty = this.cobiThing.properties[i];
             }
         }
 
@@ -64,26 +70,47 @@ export class DashboardComponent implements OnInit {
             userPowerElem.innerHTML = '-'
             COBI.rideService.userPower.subscribe(function (userPower: number) {
                 userPowerElem.innerHTML = userPower.toFixed(2);
+                this.userPowerValues.push([Date.now(),userPower]);
             })
         })
     }
 
     async getCobiThing(): Promise<Thing> {
         const things = await this.bucketService.find();
+
+        let cobiThing;
         for (let i = 0; i < things.length; i++) {
             if (things[i].type === 'COBI') {
-                return Promise.resolve(things[i]);
+                cobiThing = Promise.resolve(things[i]);
             }
         }
-        const thingToCreate = {
-            name: 'Cobi',
-            description: 'Cobi Thing',
-            type: 'COBI'
+        if (cobiThing === undefined) {
+            const thingToCreate = {
+                name: 'Cobi',
+                description: 'Cobi Thing',
+                type: 'COBI'
+            }
+            cobiThing = await this.bucketService.createThing(thingToCreate)
         }
-        const createdThing = await this.bucketService.createThing(thingToCreate)
-        createdThing.properties = []
-        createdThing.properties.push(await this.bucketService.createProperty(createdThing.id, { typeId: 'SPEED' }))
-        return Promise.resolve(createdThing)
+        
+        if (cobiThing.properties === undefined) {
+            cobiThing.properties = []
+        }
+
+        const propertyIDs = ['SPEED', 'TORQUE']
+        for (let i=0;i<propertyIDs.length;i++) {
+            let found = false;
+            for (let j=0;j<cobiThing.properties.length;j++) {
+                if (cobiThing.properties[j].type.id === propertyIDs[i] ) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                cobiThing.properties.push(await this.bucketService.createProperty(cobiThing.id, { typeId: propertyIDs[i] }))
+            }
+        }
+        
+        return Promise.resolve(cobiThing)
     }
 
     async sendDataToBucket() {
@@ -91,6 +118,11 @@ export class DashboardComponent implements OnInit {
             this.speedProperty.values = this.speedValues.slice()
             this.speedValues = [];
             this.bucketService.updatePropertyValues(this.cobiThing.id, this.speedProperty);
+        }
+        if (this.userPowerValues.length > 0) {
+            this.userPowerProperty.values = this.userPowerValues.slice()
+            this.userPowerValues = [];
+            this.bucketService.updatePropertyValues(this.cobiThing.id, this.userPowerProperty);
         }
     }
 
