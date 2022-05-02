@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Property, Thing } from '@datacentricdesign/types';
+import { any } from 'codelyzer/util/function';
 import { BucketService } from '../services/bucket.service';
 import { ScriptService } from '../services/script.service';
 
@@ -18,9 +19,11 @@ export class DashboardComponent implements OnInit {
 
     private speedProperty: Property;
     private userPowerProperty: Property;
+    private stateProperty: Property;
 
     private speedValues: number[][] = [];
     private userPowerValues: number[][] = [];
+    private stateValues: number[][] = [];
 
     constructor(private route: ActivatedRoute,
         private scriptService: ScriptService,
@@ -52,6 +55,9 @@ export class DashboardComponent implements OnInit {
                     break;
                 case 'TORQUE':
                     this.userPowerProperty = this.cobiThing.properties[i];
+                    break;
+                case 'STATE':
+                    this.stateProperty = this.cobiThing.properties[i];
             }
         }
 
@@ -71,9 +77,20 @@ export class DashboardComponent implements OnInit {
             COBI.rideService.userPower.subscribe((userPower: number) => {
                 userPowerElem.innerHTML = userPower.toFixed(2);
                 this.userPowerValues.push([Date.now(), userPower]);
-            })
-        })
-    }
+            });
+
+            // use thumb controller (press SELECT once) to log events
+            const stateElem: HTMLElement = document.getElementById('state');
+            stateElem.innerHTML = '-'
+            COBI.hub.externalInterfaceAction.subscribe((action: any) => {
+                if (action = 'SELECT') {
+                    stateElem.innerHTML = action;
+                    this.stateValues.push([Date.now(), 1]);
+                };
+            });
+            
+        });
+    };
 
     /**
      * Search for a Thing of type COBI and create it if necessary.
@@ -106,7 +123,7 @@ export class DashboardComponent implements OnInit {
         }
 
         // For all necessary property types
-        const propertyIDs = ['SPEED', 'TORQUE']
+        const propertyIDs = ['SPEED', 'TORQUE', "STATE"]
         for (let i = 0; i < propertyIDs.length; i++) {
             // Look for them in the Thing
             let found = false;
@@ -134,6 +151,11 @@ export class DashboardComponent implements OnInit {
             this.userPowerProperty.values = this.userPowerValues.slice()
             this.userPowerValues = [];
             this.bucketService.updatePropertyValues(this.cobiThing.id, this.userPowerProperty);
+        }
+        if (this.stateValues.length > 0) {
+            this.stateProperty.values = this.stateValues.slice()
+            this.stateValues = [];
+            this.bucketService.updatePropertyValues(this.cobiThing.id, this.stateProperty);
         }
     }
 
