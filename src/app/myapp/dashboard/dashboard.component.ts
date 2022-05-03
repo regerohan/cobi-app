@@ -20,10 +20,12 @@ export class DashboardComponent implements OnInit {
     private speedProperty: Property;
     private userPowerProperty: Property;
     private stateProperty: Property;
+    private cadenceProperty: Property;
 
     private speedValues: number[][] = [];
     private userPowerValues: number[][] = [];
     private stateValues: number[][] = [];
+    private cadenceValues: number[][] = [];
 
     constructor(private route: ActivatedRoute,
         private scriptService: ScriptService,
@@ -58,8 +60,11 @@ export class DashboardComponent implements OnInit {
                     break;
                 case 'STATE':
                     this.stateProperty = this.cobiThing.properties[i];
-            }
-        }
+                    break;
+                case 'CADENCE':
+                        this.cadenceProperty = this.cobiThing.properties[i];
+            };
+        };
 
         this.scriptService.load('cobi').then(() => {
             COBI.init('token')
@@ -87,6 +92,13 @@ export class DashboardComponent implements OnInit {
                     stateElem.innerHTML = action;
                     this.stateValues.push([Date.now(), 1]);
                 };
+            });
+
+            const cadenceElem: HTMLElement = document.getElementById('cadence');
+            cadenceElem.innerHTML = '-'
+            COBI.rideService.cadence.subscribe((cadence: number) => {
+                cadenceElem.innerHTML = cadence.toFixed(2);
+                this.cadenceValues.push([Date.now(), cadence]);
             });
             
         });
@@ -123,7 +135,7 @@ export class DashboardComponent implements OnInit {
         }
 
         // For all necessary property types
-        const propertyIDs = ['SPEED', 'TORQUE', "STATE"]
+        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE']
         for (let i = 0; i < propertyIDs.length; i++) {
             // Look for them in the Thing
             let found = false;
@@ -156,6 +168,11 @@ export class DashboardComponent implements OnInit {
             this.stateProperty.values = this.stateValues.slice()
             this.stateValues = [];
             this.bucketService.updatePropertyValues(this.cobiThing.id, this.stateProperty);
+        }
+        if (this.cadenceValues.length > 0) {
+            this.cadenceProperty.values = this.cadenceValues.slice()
+            this.cadenceValues = [];
+            this.bucketService.updatePropertyValues(this.cobiThing.id, this.cadenceProperty);
         }
     }
 
