@@ -21,11 +21,13 @@ export class DashboardComponent implements OnInit {
     private userPowerProperty: Property;
     private stateProperty: Property;
     private cadenceProperty: Property;
+    private heartRateProperty: Property;
 
     private speedValues: number[][] = [];
     private userPowerValues: number[][] = [];
     private stateValues: number[][] = [];
     private cadenceValues: number[][] = [];
+    private heartRateValues: number[][] = [];
 
     constructor(private route: ActivatedRoute,
         private scriptService: ScriptService,
@@ -63,6 +65,9 @@ export class DashboardComponent implements OnInit {
                     break;
                 case 'CADENCE':
                         this.cadenceProperty = this.cobiThing.properties[i];
+                    break;
+                case 'HEART_RATE':
+                        this.heartRateProperty = this.cobiThing.properties[i];
             };
         };
 
@@ -100,6 +105,13 @@ export class DashboardComponent implements OnInit {
                 cadenceElem.innerHTML = cadence.toFixed(2);
                 this.cadenceValues.push([Date.now(), cadence]);
             });
+
+            const heartRateElem: HTMLElement = document.getElementById('heart-rate');
+            heartRateElem.innerHTML = '-'
+            COBI.rideService.heartRate.subscribe((heartRate: number) => {
+                heartRateElem.innerHTML = heartRate.toFixed(2);
+                this.heartRateValues.push([Date.now(), heartRate]);
+            });
             
         });
     };
@@ -135,7 +147,7 @@ export class DashboardComponent implements OnInit {
         }
 
         // For all necessary property types
-        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE']
+        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE']
         for (let i = 0; i < propertyIDs.length; i++) {
             // Look for them in the Thing
             let found = false;
@@ -173,6 +185,11 @@ export class DashboardComponent implements OnInit {
             this.cadenceProperty.values = this.cadenceValues.slice()
             this.cadenceValues = [];
             this.bucketService.updatePropertyValues(this.cobiThing.id, this.cadenceProperty);
+        }
+        if (this.heartRateValues.length > 0) {
+            this.heartRateProperty.values = this.heartRateValues.slice()
+            this.heartRateValues = [];
+            this.bucketService.updatePropertyValues(this.cobiThing.id, this.heartRateProperty);
         }
     }
 
