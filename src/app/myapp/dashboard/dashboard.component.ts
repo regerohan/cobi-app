@@ -96,6 +96,8 @@ export class DashboardComponent implements OnInit {
                 if (action = 'SELECT') {
                     stateElem.innerHTML = action;
                     this.stateValues.push([Date.now(), 1]);
+                    var audio = new Audio('assets/honk.wav');
+                    audio.play();
                 };
             });
 
