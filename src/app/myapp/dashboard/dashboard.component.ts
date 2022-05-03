@@ -110,7 +110,7 @@ export class DashboardComponent implements OnInit {
             heartRateElem.innerHTML = '-'
             COBI.rideService.heartRate.subscribe((heartRate: number) => {
                 heartRateElem.innerHTML = heartRate.toFixed(2);
-                this.heartRateValues.push([Date.now(), heartRate]);
+                this.heartRateValues.push([Date.now(), heartRate, 0]);
             });
             
         });
