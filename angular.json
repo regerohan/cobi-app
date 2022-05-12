@@ -26,6 +26,10 @@
               "src/assets/scss/paper-dashboard.scss",
               "node_modules/ngx-toastr/toastr.css"
             ],
+            "allowedCommonJsDependencies": [
+              "chart.js",
+              "file-saver"
+            ],
             "scripts": []
           },
           "configurations": {
