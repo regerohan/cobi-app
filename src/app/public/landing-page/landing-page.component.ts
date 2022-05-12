@@ -41,8 +41,8 @@ export class LandingPageComponent implements OnInit {
     await this.oauthService.loadDiscoveryDocument();
     this.oauthService.requestAccessToken = true;
 
-    this.oauthService.initLoginFlow('/some-state;p1=1;p2=2?p3=3&p4=4');
     // the parameter here is optional. It's passed around and can be used after logging in
+    this.oauthService.initLoginFlow();
   }
 
   logout() {
