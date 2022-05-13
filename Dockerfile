@@ -25,6 +25,6 @@ COPY ./nginx/ /etc/nginx/
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy from the stahg 1
-COPY --from=builder /app/dist /usr/share/nginx/html/app
+COPY --from=builder /app/dist/cobi-app /usr/share/nginx/html/cobi-app
 
 CMD ["nginx", "-g", "daemon off;"]
