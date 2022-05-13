@@ -5,7 +5,7 @@ services:
     build:
       context: .
       args:
-        - CONFIGURATION=$MYAPP_CONFIGURATION
+        - CONFIGURATION=$COBI_APP_CONFIGURATION
     container_name: cobi-app
     environment:
      - NGINX_HOST=$MYAPP_HOST
