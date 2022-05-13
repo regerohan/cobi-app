@@ -35,8 +35,8 @@ http {
         #   include /etc/nginx/security-headers.conf;        
         }
 
-        location /myapp {
-		  try_files $uri$args $uri$args/ /myapp/index.html;
+        location /cobi-app {
+		  try_files $uri$args $uri$args/ /cobi-app/index.html;
           
           add_header Cache-Control 'max-age=86400'; # one day
         #   include /etc/nginx/security-headers.conf;       
