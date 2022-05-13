@@ -23,6 +23,8 @@ export class AppService {
       } else if (environment.production) {
         configUrl =  `assets/config/prod.config.json`
       }
+      console.log(configUrl)
+      console.log(environment)
       this.http.get(configUrl).subscribe((response: any) => {
         this.configSettings = response;
         resolve(true);
