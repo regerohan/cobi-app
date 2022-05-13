@@ -8,6 +8,6 @@ services:
         - CONFIGURATION=$COBI_APP_CONFIGURATION
     container_name: cobi-app
     environment:
-     - NGINX_HOST=$MYAPP_HOST
-     - NGINX_PORT=$MYAPP_PORT
+     - NGINX_HOST=$COBI_APP_HOST
+     - NGINX_PORT=$COBI_APP_PORT
     restart: on-failure
