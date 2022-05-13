@@ -1,0 +1,20 @@
+{
+    "name": "Cobi App",
+    "version": "0.0.1",
+    "environment": "production",
+    "basehref": "cobi-app",
+    "apiURL": "https://dwd.tudelft.nl/bucket/api",
+    "authCodeFlow": {
+        "issuer": "https://dwd.tudelft.nl:443/",
+        "redirectUri": "https://dwd.tudelft.nl/cobi-app",
+        "postLogoutRedirectUri": "https://dwd.tudelft.nl/cobi-app",
+        "clientId": "clients:cobi-app",
+        "responseType": "code",
+        "scope": "openid offline profile email dcd:public dcd:things dcd:properties",
+        "useSilentRefresh": false,
+        "showDebugInformation": true,
+        "sessionChecksEnabled": false,
+        "timeoutFactor": 0.01,
+        "clearHashAfterLogin": false
+      }
+}

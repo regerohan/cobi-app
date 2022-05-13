@@ -18,7 +18,9 @@ export class AppService {
   public load(): Promise<any> {
     return new Promise((resolve, reject) => {
       let configUrl = `assets/config/dev.config.json`
-      if (environment.production) {
+      if (environment.dwd) {
+        configUrl =  `assets/config/dwd.config.json`
+      } else if (environment.production) {
         configUrl =  `assets/config/prod.config.json`
       }
       this.http.get(configUrl).subscribe((response: any) => {
