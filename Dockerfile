@@ -13,7 +13,7 @@ WORKDIR /app
 COPY . .
 
 # Build the project and copy the files
-RUN npm run build --configuration="${CONFIGURATION}"
+RUN npm run build -- --configuration ${CONFIGURATION}
 
 FROM nginx:1.19
 
