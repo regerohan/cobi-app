@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Property, Thing } from '@datacentricdesign/types';
 import { any } from 'codelyzer/util/function';
+import { delay } from 'rxjs';
 import { BucketService } from '../services/bucket.service';
 import { ScriptService } from '../services/script.service';
 
@@ -22,7 +23,9 @@ export class DashboardComponent implements OnInit {
     private stateProperty: Property;
     private cadenceProperty: Property;
     private heartRateProperty: Property;
+    private ridingDurationProperty: Property;
 
+    private ridingDurationValues: number[][] = [];
     private speedValues: number[][] = [];
     private userPowerValues: number[][] = [];
     private stateValues: number[][] = [];
@@ -34,6 +37,9 @@ export class DashboardComponent implements OnInit {
         private bucketService: BucketService) {
 
     }
+    // async delay(ms: number) {
+    //     await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
+    // }
 
     async ngOnInit() {
         // look up the params
@@ -54,6 +60,9 @@ export class DashboardComponent implements OnInit {
         console.log(this.cobiThing)
         for (let i = 0; i < this.cobiThing.properties.length; i++) {
             switch (this.cobiThing.properties[i].type.id) {
+                case 'Riding_Duration':
+                    this.ridingDurationProperty = this.cobiThing.properties[i];
+                    break;
                 case 'SPEED':
                     this.speedProperty = this.cobiThing.properties[i];
                     break;
@@ -75,6 +84,13 @@ export class DashboardComponent implements OnInit {
             COBI.init('token')
             setInterval(this.sendDataToBucket.bind(this), 5000)
 
+            const durationElem: HTMLElement = document.getElementById('duration');
+            durationElem.innerHTML = '-'
+            COBI.tourService.ridingDuration.subscribe((duration: number) => {
+                durationElem.innerHTML = duration.toFixed(2);
+                this.ridingDurationValues.push([Date.now(), duration]);
+            });
+            
             const speedElem: HTMLElement = document.getElementById('speed');
             speedElem.innerHTML = '-'
             COBI.rideService.speed.subscribe((speed: number) => {
@@ -90,16 +106,23 @@ export class DashboardComponent implements OnInit {
             });
 
             // use thumb controller (press SELECT once) to log events
-            const stateElem: HTMLElement = document.getElementById('state');
-            stateElem.innerHTML = '-'
-            COBI.hub.externalInterfaceAction.subscribe((action: any) => {
-                if (action = 'SELECT') {
-                    stateElem.innerHTML = action;
-                    this.stateValues.push([Date.now(), 1]);
-                    var audio = new Audio('assets/honk.wav');
-                    audio.play();
-                };
-            });
+           const stateElem: HTMLElement = document.getElementById('state');
+           stateElem.innerHTML = '-';
+           COBI.hub.externalInterfaceAction.subscribe((action: any) => {
+               if (action = 'SELECT') {
+                   stateElem.innerHTML = action;
+                   
+                //    this.stateValues.push([Date.now(), 1]);
+                    // this.delay(3000).then(any => {
+                    // stateElem.innerHTML = '-';});
+                        stateElem.innerHTML = 'pressed';
+                        setTimeout(()=>{stateElem.innerHTML = '-';},3000);
+    
+                //    var audio = new Audio('assets/honk.wav');
+                //    audio.play();
+                   
+               };
+           });
 
             const cadenceElem: HTMLElement = document.getElementById('cadence');
             cadenceElem.innerHTML = '-'
