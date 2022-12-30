@@ -24,13 +24,21 @@ export class DashboardComponent implements OnInit {
     private cadenceProperty: Property;
     private heartRateProperty: Property;
     private ridingDurationProperty: Property;
+    private averageSpeedProperty: Property;
+    private bellRingingProperty: Property;
+    private ambientLightProperty: Property;
+    private mobileLocationProperty: Property;
 
+    private bellRingingValues: number[][] = [];
     private ridingDurationValues: number[][] = [];
+    private averageSpeedValues: number[][] = [];
     private speedValues: number[][] = [];
     private userPowerValues: number[][] = [];
     private stateValues: number[][] = [];
     private cadenceValues: number[][] = [];
     private heartRateValues: number[][] = [];
+    private ambientLightValues: number[][] = [];
+    private mobileLocationValues: number[][] = [];
 
     constructor(private route: ActivatedRoute,
         private scriptService: ScriptService,
@@ -75,8 +83,21 @@ export class DashboardComponent implements OnInit {
                 case 'CADENCE':
                         this.cadenceProperty = this.cobiThing.properties[i];
                     break;
+                case 'average_speed':
+                        this.averageSpeedProperty = this.cobiThing.properties[i];
+                    break;
                 case 'HEART_RATE':
                         this.heartRateProperty = this.cobiThing.properties[i];
+                    break;
+                case 'bell_ringing':
+                        this.bellRingingProperty = this.cobiThing.properties[i];
+                    break;
+                case 'ambient_light':
+                        this.ambientLightProperty = this.cobiThing.properties[i];
+                    break;
+                case 'mobile_location':
+                        this.mobileLocationProperty = this.cobiThing.properties[i];
+                    break;
             };
         };
 
@@ -89,6 +110,13 @@ export class DashboardComponent implements OnInit {
             COBI.tourService.ridingDuration.subscribe((duration: number) => {
                 durationElem.innerHTML = duration.toFixed(2);
                 this.ridingDurationValues.push([Date.now(), duration]);
+            });
+
+            const averageSpeedElem: HTMLElement = document.getElementById('averageSpeed');
+            averageSpeedElem.innerHTML = '-'
+            COBI.tourService.averageSpeed.subscribe((average_speed: number) => {
+                averageSpeedElem.innerHTML = average_speed.toFixed(2);
+                this.averageSpeedValues.push([Date.now(), average_speed]);
             });
             
             const speedElem: HTMLElement = document.getElementById('speed');
@@ -116,7 +144,7 @@ export class DashboardComponent implements OnInit {
                     // this.delay(3000).then(any => {
                     // stateElem.innerHTML = '-';});
                         stateElem.innerHTML = 'pressed';
-                        setTimeout(()=>{stateElem.innerHTML = '-';},3000);
+                        setTimeout(()=>{stateElem.innerHTML = '-';},300);
     
                 //    var audio = new Audio('assets/honk.wav');
                 //    audio.play();
@@ -136,6 +164,27 @@ export class DashboardComponent implements OnInit {
             COBI.rideService.heartRate.subscribe((heartRate: number) => {
                 heartRateElem.innerHTML = heartRate.toFixed(2);
                 this.heartRateValues.push([Date.now(), heartRate, 0]);
+            });
+
+            const bellRingingElem: HTMLElement = document.getElementById('bell-ringing');
+            bellRingingElem.innerHTML = '-'
+            COBI.hub.bellRinging.subscribe((bellRinging: number) => {
+                bellRingingElem.innerHTML = bellRinging.toFixed(2);
+                this.bellRingingValues.push([Date.now(), bellRinging]);
+            });
+
+            const ambientLightElem: HTMLElement = document.getElementById('ambient-light');
+            ambientLightElem.innerHTML = '-'
+            COBI.hub.ambientLightState.subscribe((ambientLight: number) => {
+                ambientLightElem.innerHTML = ambientLight.toFixed(2);
+                this.ambientLightValues.push([Date.now(), ambientLight]);
+            });
+
+            const mobileLocationElem: HTMLElement = document.getElementById('mobile-location');
+            mobileLocationElem.innerHTML = '-'
+            COBI.mobile.location.subscribe((mobileLocation: number) => {
+                mobileLocationElem.innerHTML = mobileLocation.toFixed(2);
+                this.mobileLocationValues.push([Date.now(), mobileLocation]);
             });
             
         });
