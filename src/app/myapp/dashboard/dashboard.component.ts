@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Property, Thing } from '@datacentricdesign/types';
 import { any } from 'codelyzer/util/function';
-import { delay } from 'rxjs';
+//import { delay } from 'rxjs';
 import { BucketService } from '../services/bucket.service';
 import { ScriptService } from '../services/script.service';
 
@@ -27,7 +27,8 @@ export class DashboardComponent implements OnInit {
     private averageSpeedProperty: Property;
     private bellRingingProperty: Property;
     private ambientLightProperty: Property;
-    private mobileLocationProperty: Property;
+    private mobileLatitudeProperty: Property;
+    private mobileLongitudeProperty: Property;
 
     private bellRingingValues: number[][] = [];
     private ridingDurationValues: number[][] = [];
@@ -38,7 +39,8 @@ export class DashboardComponent implements OnInit {
     private cadenceValues: number[][] = [];
     private heartRateValues: number[][] = [];
     private ambientLightValues: number[][] = [];
-    private mobileLocationValues: number[][] = [];
+    private mobileLatitudeValues: number[][] = [];
+    private mobileLongitudeValues: number[][] = [];
 
     constructor(private route: ActivatedRoute,
         private scriptService: ScriptService,
@@ -96,7 +98,7 @@ export class DashboardComponent implements OnInit {
                         this.ambientLightProperty = this.cobiThing.properties[i];
                     break;
                 case 'mobile_location':
-                        this.mobileLocationProperty = this.cobiThing.properties[i];
+                        this.mobileLatitudeProperty = this.cobiThing.properties[i];
                     break;
             };
         };
@@ -180,12 +182,21 @@ export class DashboardComponent implements OnInit {
                 this.ambientLightValues.push([Date.now(), ambientLight]);
             });
 
-            const mobileLocationElem: HTMLElement = document.getElementById('mobile-location');
-            mobileLocationElem.innerHTML = '-'
-            COBI.mobile.location.subscribe((mobileLocation: number) => {
-                mobileLocationElem.innerHTML = mobileLocation.toFixed(2);
-                this.mobileLocationValues.push([Date.now(), mobileLocation]);
-            });
+            const mobileLatitudeElem: HTMLElement = document.getElementById('mobile-latitude');
+            mobileLatitudeElem.innerHTML = '-'
+                COBI.mobile.location.subscribe((value) => {
+                    let mobileLatitude = value.coordinate.latitude;
+                    mobileLatitudeElem.innerHTML = mobileLatitude.toFixed(8);
+                this.mobileLatitudeValues.push([Date.now(), mobileLatitude]);
+           });
+
+           const mobileLongitudeElem: HTMLElement = document.getElementById('mobile-longitude');
+              mobileLongitudeElem.innerHTML = '-'
+                COBI.mobile.location.subscribe((value) => {
+                    let mobileLongitude = value.coordinate.longitude;
+                    mobileLongitudeElem.innerHTML = mobileLongitude.toFixed(8);
+                    this.mobileLongitudeValues.push([Date.now(), mobileLongitude]);
+                });
             
         });
     };
