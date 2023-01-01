@@ -47,9 +47,6 @@ export class DashboardComponent implements OnInit {
         private bucketService: BucketService) {
 
     }
-    // async delay(ms: number) {
-    //     await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
-    // }
 
     async ngOnInit() {
         // look up the params
@@ -83,22 +80,22 @@ export class DashboardComponent implements OnInit {
                     this.stateProperty = this.cobiThing.properties[i];
                     break;
                 case 'CADENCE':
-                        this.cadenceProperty = this.cobiThing.properties[i];
+                    this.cadenceProperty = this.cobiThing.properties[i];
                     break;
                 case 'average_speed':
-                        this.averageSpeedProperty = this.cobiThing.properties[i];
+                    this.averageSpeedProperty = this.cobiThing.properties[i];
                     break;
                 case 'HEART_RATE':
-                        this.heartRateProperty = this.cobiThing.properties[i];
+                    this.heartRateProperty = this.cobiThing.properties[i];
                     break;
                 case 'bell_ringing':
-                        this.bellRingingProperty = this.cobiThing.properties[i];
+                    this.bellRingingProperty = this.cobiThing.properties[i];
                     break;
                 case 'ambient_light':
-                        this.ambientLightProperty = this.cobiThing.properties[i];
+                    this.ambientLightProperty = this.cobiThing.properties[i];
                     break;
                 case 'mobile_location':
-                        this.mobileLatitudeProperty = this.cobiThing.properties[i];
+                    this.mobileLatitudeProperty = this.cobiThing.properties[i];
                     break;
             };
         };
@@ -120,7 +117,7 @@ export class DashboardComponent implements OnInit {
                 averageSpeedElem.innerHTML = average_speed.toFixed(2);
                 this.averageSpeedValues.push([Date.now(), average_speed]);
             });
-            
+
             const speedElem: HTMLElement = document.getElementById('speed');
             speedElem.innerHTML = '-'
             COBI.rideService.speed.subscribe((speed: number) => {
@@ -136,18 +133,37 @@ export class DashboardComponent implements OnInit {
             });
 
             // use thumb controller (press SELECT once) to log events
-           const stateElem: HTMLElement = document.getElementById('state');
-           stateElem.innerHTML = '-';
-           const originalBackgroundColor = stateElem.style.backgroundColor;
-           COBI.hub.externalInterfaceAction.subscribe((action: any) => {
-               if (action = 'SELECT') {
-                   stateElem.innerHTML = action;
-                   stateElem.style.backgroundColor = 'red';
-                        stateElem.innerHTML = 'pressed';
-                        setTimeout(()=>{stateElem.innerHTML = '-';
-                        stateElem.style.backgroundColor = originalBackgroundColor;},300);
-               };
-           });
+            const stateElem: HTMLElement = document.getElementById('state');
+            stateElem.innerHTML = '-';
+            const originalBackgroundColor = stateElem.style.backgroundColor;
+            COBI.hub.externalInterfaceAction.subscribe((action: any) => {
+                if (action = 'SELECT') {
+                    this.stateValues.push([Date.now(), 1]);
+                    stateElem.innerHTML = action;
+                    stateElem.style.backgroundColor = 'red';
+                    stateElem.innerHTML = 'pressed';
+                    setTimeout(() => {
+                        stateElem.innerHTML = '-';
+                        stateElem.style.backgroundColor = originalBackgroundColor;
+                    }, 300);
+                };
+            });
+
+            const bellRingingElem: HTMLElement = document.getElementById('bell-ringing');
+            bellRingingElem.innerHTML = '-'
+            COBI.hub.bellRinging.subscribe((bellRinging: any) => {
+                if (bellRinging = 'SELECT') {   //not sure what does bellRinging return
+                    this.bellRingingValues.push([Date.now(), 1]);
+                    bellRingingElem.innerHTML = 'pressed';
+                    bellRingingElem.style.backgroundColor = 'red';
+                    setTimeout(() => {
+                        bellRingingElem.innerHTML = '-';
+                        bellRingingElem.style.backgroundColor = originalBackgroundColor;
+                    }, 300);
+                };
+                //    bellRingingElem.innerHTML = bellRinging.toFixed(2);
+                //    this.bellRingingValues.push([Date.now(), bellRinging]);
+            });
 
             const cadenceElem: HTMLElement = document.getElementById('cadence');
             cadenceElem.innerHTML = '-'
@@ -163,12 +179,7 @@ export class DashboardComponent implements OnInit {
                 this.heartRateValues.push([Date.now(), heartRate, 0]);
             });
 
-            const bellRingingElem: HTMLElement = document.getElementById('bell-ringing');
-            bellRingingElem.innerHTML = '-'
-            COBI.hub.bellRinging.subscribe((bellRinging: number) => {
-                bellRingingElem.innerHTML = bellRinging.toFixed(2);
-                this.bellRingingValues.push([Date.now(), bellRinging]);
-            });
+
 
             const ambientLightElem: HTMLElement = document.getElementById('ambient-light');
             ambientLightElem.innerHTML = '-'
@@ -179,20 +190,20 @@ export class DashboardComponent implements OnInit {
 
             const mobileLatitudeElem: HTMLElement = document.getElementById('mobile-latitude');
             mobileLatitudeElem.innerHTML = '-'
-                COBI.mobile.location.subscribe((value) => {
-                    let mobileLatitude = value.coordinate.latitude;
-                    mobileLatitudeElem.innerHTML = mobileLatitude.toFixed(8);
+            COBI.mobile.location.subscribe((value) => {
+                let mobileLatitude = value.coordinate.latitude;
+                mobileLatitudeElem.innerHTML = mobileLatitude.toFixed(8);
                 this.mobileLatitudeValues.push([Date.now(), mobileLatitude]);
-           });
+            });
 
-           const mobileLongitudeElem: HTMLElement = document.getElementById('mobile-longitude');
-              mobileLongitudeElem.innerHTML = '-'
-                COBI.mobile.location.subscribe((value) => {
-                    let mobileLongitude = value.coordinate.longitude;
-                    mobileLongitudeElem.innerHTML = mobileLongitude.toFixed(8);
-                    this.mobileLongitudeValues.push([Date.now(), mobileLongitude]);
-                });
-            
+            const mobileLongitudeElem: HTMLElement = document.getElementById('mobile-longitude');
+            mobileLongitudeElem.innerHTML = '-'
+            COBI.mobile.location.subscribe((value) => {
+                let mobileLongitude = value.coordinate.longitude;
+                mobileLongitudeElem.innerHTML = mobileLongitude.toFixed(8);
+                this.mobileLongitudeValues.push([Date.now(), mobileLongitude]);
+            });
+
         });
     };
 
@@ -227,7 +238,8 @@ export class DashboardComponent implements OnInit {
         }
 
         // For all necessary property types
-        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE']
+         const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE']
+        // const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE', 'BELL_RINGING', 'AMBIENT_LIGHT', 'MOBILE_LATITUDE', 'MOBILE_LONGITUDE']
         for (let i = 0; i < propertyIDs.length; i++) {
             // Look for them in the Thing
             let found = false;
@@ -271,6 +283,31 @@ export class DashboardComponent implements OnInit {
             this.heartRateValues = [];
             this.bucketService.updatePropertyValues(this.cobiThing.id, this.heartRateProperty);
         }
+        // if (this.mobileLatitudeValues.length > 0) {
+        //     this.mobileLatitudeProperty.values = this.mobileLatitudeValues.slice()
+        //     this.mobileLatitudeValues = [];
+        //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.mobileLatitudeProperty);
+        // }
+        // if (this.mobileLongitudeValues.length > 0) {
+        //     this.mobileLongitudeProperty.values = this.mobileLongitudeValues.slice()
+        //     this.mobileLongitudeValues = [];
+        //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.mobileLongitudeProperty);
+        // }
+        // if (this.ambientLightValues.length > 0) {
+        //     this.ambientLightProperty.values = this.ambientLightValues.slice()
+        //     this.ambientLightValues = [];
+        //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.ambientLightProperty);
+        // }
+        // if (this.averageSpeedValues.length > 0) {
+        //     this.averageSpeedProperty.values = this.averageSpeedValues.slice()
+        //     this.averageSpeedValues = [];
+        //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.averageSpeedProperty);
+        // }
+        // if (this.bellRingingValues.length > 0) {
+        //     this.bellRingingProperty.values = this.bellRingingValues.slice()
+        //     this.bellRingingValues = [];
+        //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.bellRingingProperty);
+        // }
     }
 
 }
