@@ -138,19 +138,14 @@ export class DashboardComponent implements OnInit {
             // use thumb controller (press SELECT once) to log events
            const stateElem: HTMLElement = document.getElementById('state');
            stateElem.innerHTML = '-';
+           const originalBackgroundColor = stateElem.style.backgroundColor;
            COBI.hub.externalInterfaceAction.subscribe((action: any) => {
                if (action = 'SELECT') {
                    stateElem.innerHTML = action;
-                   
-                //    this.stateValues.push([Date.now(), 1]);
-                    // this.delay(3000).then(any => {
-                    // stateElem.innerHTML = '-';});
+                   stateElem.style.backgroundColor = 'red';
                         stateElem.innerHTML = 'pressed';
-                        setTimeout(()=>{stateElem.innerHTML = '-';},300);
-    
-                //    var audio = new Audio('assets/honk.wav');
-                //    audio.play();
-                   
+                        setTimeout(()=>{stateElem.innerHTML = '-';
+                        stateElem.style.backgroundColor = originalBackgroundColor;},300);
                };
            });
 
