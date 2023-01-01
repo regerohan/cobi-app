@@ -91,7 +91,7 @@ export class DashboardComponent implements OnInit {
                 case 'bell_ringing':
                     this.bellRingingProperty = this.cobiThing.properties[i];
                     break;
-                case 'ambient_light':
+                case 'LIGHT':
                     this.ambientLightProperty = this.cobiThing.properties[i];
                     break;
                 case 'mobile_location':
@@ -238,7 +238,7 @@ export class DashboardComponent implements OnInit {
         }
 
         // For all necessary property types
-         const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE']
+         const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE','LIGHT', 'HEART_RATE']
         // const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE', 'BELL_RINGING', 'AMBIENT_LIGHT', 'MOBILE_LATITUDE', 'MOBILE_LONGITUDE']
         for (let i = 0; i < propertyIDs.length; i++) {
             // Look for them in the Thing
@@ -293,11 +293,11 @@ export class DashboardComponent implements OnInit {
         //     this.mobileLongitudeValues = [];
         //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.mobileLongitudeProperty);
         // }
-        // if (this.ambientLightValues.length > 0) {
-        //     this.ambientLightProperty.values = this.ambientLightValues.slice()
-        //     this.ambientLightValues = [];
-        //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.ambientLightProperty);
-        // }
+        if (this.ambientLightValues.length > 0) {
+            this.ambientLightProperty.values = this.ambientLightValues.slice()
+            this.ambientLightValues = [];
+            this.bucketService.updatePropertyValues(this.cobiThing.id, this.ambientLightProperty);
+        }
         // if (this.averageSpeedValues.length > 0) {
         //     this.averageSpeedProperty.values = this.averageSpeedValues.slice()
         //     this.averageSpeedValues = [];
