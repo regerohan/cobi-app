@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Property, Thing } from '@datacentricdesign/types';
 import { any } from 'codelyzer/util/function';
+import { WeatherService } from 'app/weather.service';
+
 //import { delay } from 'rxjs';
 import { BucketService } from '../services/bucket.service';
 import { ScriptService } from '../services/script.service';
@@ -14,6 +16,7 @@ declare let COBI: any;
     moduleId: module.id,
     templateUrl: 'dashboard.component.html'
 })
+
 export class DashboardComponent implements OnInit {
 
     private cobiThing: Thing;
@@ -41,11 +44,21 @@ export class DashboardComponent implements OnInit {
     private ambientLightValues: number[][] = [];
     private mobileLatitudeValues: number[][] = [];
     private mobileLongitudeValues: number[][] = [];
+    private weather = 0;
 
     constructor(private route: ActivatedRoute,
         private scriptService: ScriptService,
-        private bucketService: BucketService) {
+        private bucketService: BucketService,
+        private weatherService: WeatherService) {
+        // async getCurrentWeather() {
+        //     const weather = await this.weatherService.getCurrentWeather(40.71, -74.01);
+        //     console.log(weather);
 
+    }
+
+    async getCurretWeather() {
+        const weather = await this.weatherService.getCurrentWeather(40.71, -74.01);
+        console.log(weather);
     }
 
     async ngOnInit() {
@@ -62,6 +75,10 @@ export class DashboardComponent implements OnInit {
                 }
             }
             );
+
+
+
+
 
         this.cobiThing = await this.getOrInitialiseCobiThing();
         console.log(this.cobiThing)
@@ -94,11 +111,13 @@ export class DashboardComponent implements OnInit {
                 case 'LIGHT':
                     this.ambientLightProperty = this.cobiThing.properties[i];
                     break;
-                case 'mobile_location':
+                case 'LATITUDE':
                     this.mobileLatitudeProperty = this.cobiThing.properties[i];
                     break;
             };
         };
+
+
 
         this.scriptService.load('cobi').then(() => {
             COBI.init('token')
@@ -133,18 +152,19 @@ export class DashboardComponent implements OnInit {
             });
 
             // use thumb controller (press SELECT once) to log events
+            const statedivElem: HTMLElement = document.getElementById('statediv');
             const stateElem: HTMLElement = document.getElementById('state');
             stateElem.innerHTML = '-';
-            const originalBackgroundColor = stateElem.style.backgroundColor;
+            const originalBackgroundColor = statedivElem.style.backgroundColor;
             COBI.hub.externalInterfaceAction.subscribe((action: any) => {
                 if (action = 'SELECT') {
                     this.stateValues.push([Date.now(), 1]);
-                    stateElem.innerHTML = action;
-                    stateElem.style.backgroundColor = 'red';
-                    stateElem.innerHTML = 'pressed';
+                    // stateElem.innerHTML = action;
+                    statedivElem.style.backgroundColor = 'red';
+                    // stateElem.innerHTML = 'pressed';
                     setTimeout(() => {
                         stateElem.innerHTML = '-';
-                        stateElem.style.backgroundColor = originalBackgroundColor;
+                        statedivElem.style.backgroundColor = originalBackgroundColor;
                     }, 300);
                 };
             });
@@ -179,8 +199,6 @@ export class DashboardComponent implements OnInit {
                 this.heartRateValues.push([Date.now(), heartRate, 0]);
             });
 
-
-
             const ambientLightElem: HTMLElement = document.getElementById('ambient-light');
             ambientLightElem.innerHTML = '-'
             COBI.hub.ambientLightState.subscribe((ambientLight: number) => {
@@ -203,6 +221,11 @@ export class DashboardComponent implements OnInit {
                 mobileLongitudeElem.innerHTML = mobileLongitude.toFixed(8);
                 this.mobileLongitudeValues.push([Date.now(), mobileLongitude]);
             });
+
+            // const accuWeatherElem: HTMLElement = document.getElementById('Weather');
+            // accuWeatherElem.innerHTML = '-'
+            // const weather = this.weatherService.getCurrentWeather(52.0010577,4.3692891);
+            // accuWeatherElem.innerHTML = weather;
 
         });
     };
@@ -238,7 +261,7 @@ export class DashboardComponent implements OnInit {
         }
 
         // For all necessary property types
-         const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE','LIGHT', 'HEART_RATE']
+        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'LIGHT', 'LATITUDE', 'HEART_RATE']
         // const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE', 'BELL_RINGING', 'AMBIENT_LIGHT', 'MOBILE_LATITUDE', 'MOBILE_LONGITUDE']
         for (let i = 0; i < propertyIDs.length; i++) {
             // Look for them in the Thing

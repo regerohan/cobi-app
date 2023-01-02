@@ -45,10 +45,14 @@ exports.__esModule = true;
 exports.DashboardComponent = void 0;
 var core_1 = require("@angular/core");
 var DashboardComponent = /** @class */ (function () {
-    function DashboardComponent(route, scriptService, bucketService) {
+    function DashboardComponent(route, scriptService, bucketService, weatherService) {
+        // async getCurrentWeather() {
+        //     const weather = await this.weatherService.getCurrentWeather(40.71, -74.01);
+        //     console.log(weather);
         this.route = route;
         this.scriptService = scriptService;
         this.bucketService = bucketService;
+        this.weatherService = weatherService;
         this.bellRingingValues = [];
         this.ridingDurationValues = [];
         this.averageSpeedValues = [];
@@ -60,7 +64,22 @@ var DashboardComponent = /** @class */ (function () {
         this.ambientLightValues = [];
         this.mobileLatitudeValues = [];
         this.mobileLongitudeValues = [];
+        this.weather = 0;
     }
+    DashboardComponent.prototype.getCurretWeather = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var weather;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.weatherService.getCurrentWeather(40.71, -74.01)];
+                    case 1:
+                        weather = _a.sent();
+                        console.log(weather);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     DashboardComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _a, i;
@@ -112,10 +131,10 @@ var DashboardComponent = /** @class */ (function () {
                                 case 'bell_ringing':
                                     this.bellRingingProperty = this.cobiThing.properties[i];
                                     break;
-                                case 'ambient_light':
+                                case 'LIGHT':
                                     this.ambientLightProperty = this.cobiThing.properties[i];
                                     break;
-                                case 'mobile_location':
+                                case 'LATITUDE':
                                     this.mobileLatitudeProperty = this.cobiThing.properties[i];
                                     break;
                             }
@@ -150,18 +169,19 @@ var DashboardComponent = /** @class */ (function () {
                                 _this.userPowerValues.push([Date.now(), userPower]);
                             });
                             // use thumb controller (press SELECT once) to log events
+                            var statedivElem = document.getElementById('statediv');
                             var stateElem = document.getElementById('state');
                             stateElem.innerHTML = '-';
-                            var originalBackgroundColor = stateElem.style.backgroundColor;
+                            var originalBackgroundColor = statedivElem.style.backgroundColor;
                             COBI.hub.externalInterfaceAction.subscribe(function (action) {
                                 if (action = 'SELECT') {
                                     _this.stateValues.push([Date.now(), 1]);
-                                    stateElem.innerHTML = action;
-                                    stateElem.style.backgroundColor = 'red';
-                                    stateElem.innerHTML = 'pressed';
+                                    // stateElem.innerHTML = action;
+                                    statedivElem.style.backgroundColor = 'red';
+                                    // stateElem.innerHTML = 'pressed';
                                     setTimeout(function () {
                                         stateElem.innerHTML = '-';
-                                        stateElem.style.backgroundColor = originalBackgroundColor;
+                                        statedivElem.style.backgroundColor = originalBackgroundColor;
                                     }, 300);
                                 }
                                 ;
@@ -214,6 +234,10 @@ var DashboardComponent = /** @class */ (function () {
                                 mobileLongitudeElem.innerHTML = mobileLongitude.toFixed(8);
                                 _this.mobileLongitudeValues.push([Date.now(), mobileLongitude]);
                             });
+                            // const accuWeatherElem: HTMLElement = document.getElementById('Weather');
+                            // accuWeatherElem.innerHTML = '-'
+                            // const weather = this.weatherService.getCurrentWeather(52.0010577,4.3692891);
+                            // accuWeatherElem.innerHTML = weather;
                         });
                         return [2 /*return*/];
                 }
@@ -254,7 +278,7 @@ var DashboardComponent = /** @class */ (function () {
                         if (cobiThing.properties === undefined) {
                             cobiThing.properties = [];
                         }
-                        propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE'];
+                        propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'LIGHT', 'LATITUDE', 'HEART_RATE'];
                         i = 0;
                         _c.label = 4;
                     case 4:
@@ -308,6 +332,21 @@ var DashboardComponent = /** @class */ (function () {
                     this.heartRateProperty.values = this.heartRateValues.slice();
                     this.heartRateValues = [];
                     this.bucketService.updatePropertyValues(this.cobiThing.id, this.heartRateProperty);
+                }
+                // if (this.mobileLatitudeValues.length > 0) {
+                //     this.mobileLatitudeProperty.values = this.mobileLatitudeValues.slice()
+                //     this.mobileLatitudeValues = [];
+                //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.mobileLatitudeProperty);
+                // }
+                // if (this.mobileLongitudeValues.length > 0) {
+                //     this.mobileLongitudeProperty.values = this.mobileLongitudeValues.slice()
+                //     this.mobileLongitudeValues = [];
+                //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.mobileLongitudeProperty);
+                // }
+                if (this.ambientLightValues.length > 0) {
+                    this.ambientLightProperty.values = this.ambientLightValues.slice();
+                    this.ambientLightValues = [];
+                    this.bucketService.updatePropertyValues(this.cobiThing.id, this.ambientLightProperty);
                 }
                 return [2 /*return*/];
             });
