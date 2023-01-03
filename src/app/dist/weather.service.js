@@ -47,7 +47,7 @@ var core_1 = require("@angular/core");
 var axios_1 = require("axios");
 var WeatherService = /** @class */ (function () {
     function WeatherService() {
-        this.API_KEY = '29da51f6b3c741a37419e38f280a2331';
+        this.API_KEY = 'YOUR_API_KEY';
         this.API_URL = "https://api.openweathermap.org/data/2.5/weather";
     }
     WeatherService.prototype.getCurrentWeather = function (lat, lon) {

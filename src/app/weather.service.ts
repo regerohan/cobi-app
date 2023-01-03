@@ -5,7 +5,7 @@ import axios from 'axios';
   providedIn: 'root'
 })
 export class WeatherService {
-  API_KEY = '29da51f6b3c741a37419e38f280a2331';
+  API_KEY = 'YOUR_API_KEY';
   API_URL = `https://api.openweathermap.org/data/2.5/weather`;
 
   constructor() { }
