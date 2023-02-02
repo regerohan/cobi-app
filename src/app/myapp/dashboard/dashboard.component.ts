@@ -275,6 +275,7 @@ export class DashboardComponent implements OnInit {
                 }
             }
             // Otherwise, create a new property for this type.
+            //test commit
             if (!found) {
                 cobiThing.properties.push(await this.bucketService.createProperty(cobiThing.id, { typeId: propertyIDs[i] }))
             }
