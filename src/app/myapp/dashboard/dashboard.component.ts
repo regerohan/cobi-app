@@ -111,6 +111,9 @@ export class DashboardComponent implements OnInit {
                 case 'LIGHT':
                     this.ambientLightProperty = this.cobiThing.properties[i];
                     break;
+                case 'LONGITUDE':
+                    this.mobileLongitudeProperty = this.cobiThing.properties[i];
+                    break;
                 case 'LATITUDE':
                     this.mobileLatitudeProperty = this.cobiThing.properties[i];
                     break;
@@ -261,7 +264,7 @@ export class DashboardComponent implements OnInit {
         }
 
         // For all necessary property types
-        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'LIGHT', 'LATITUDE', 'HEART_RATE']
+        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'LIGHT', 'LATITUDE', 'HEART_RATE', 'LONGITUDE']
         // const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE', 'BELL_RINGING', 'AMBIENT_LIGHT', 'MOBILE_LATITUDE', 'MOBILE_LONGITUDE']
         for (let i = 0; i < propertyIDs.length; i++) {
             // Look for them in the Thing
@@ -306,16 +309,16 @@ export class DashboardComponent implements OnInit {
             this.heartRateValues = [];
             this.bucketService.updatePropertyValues(this.cobiThing.id, this.heartRateProperty);
         }
-        // if (this.mobileLatitudeValues.length > 0) {
-        //     this.mobileLatitudeProperty.values = this.mobileLatitudeValues.slice()
-        //     this.mobileLatitudeValues = [];
-        //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.mobileLatitudeProperty);
-        // }
-        // if (this.mobileLongitudeValues.length > 0) {
-        //     this.mobileLongitudeProperty.values = this.mobileLongitudeValues.slice()
-        //     this.mobileLongitudeValues = [];
-        //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.mobileLongitudeProperty);
-        // }
+        if (this.mobileLatitudeValues.length > 0) {
+            this.mobileLatitudeProperty.values = this.mobileLatitudeValues.slice()
+            this.mobileLatitudeValues = [];
+            this.bucketService.updatePropertyValues(this.cobiThing.id, this.mobileLatitudeProperty);
+        }
+        if (this.mobileLongitudeValues.length > 0) {
+            this.mobileLongitudeProperty.values = this.mobileLongitudeValues.slice()
+            this.mobileLongitudeValues = [];
+            this.bucketService.updatePropertyValues(this.cobiThing.id, this.mobileLongitudeProperty);
+        }
         if (this.ambientLightValues.length > 0) {
             this.ambientLightProperty.values = this.ambientLightValues.slice()
             this.ambientLightValues = [];
