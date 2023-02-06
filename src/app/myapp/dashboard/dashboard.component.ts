@@ -264,8 +264,8 @@ export class DashboardComponent implements OnInit {
         }
 
         // For all necessary property types
-        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'LIGHT', 'LATITUDE', 'HEART_RATE', 'LONGITUDE']
-        // const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE', 'BELL_RINGING', 'AMBIENT_LIGHT', 'MOBILE_LATITUDE', 'MOBILE_LONGITUDE']
+        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'LIGHT', 'BELL_RINGING', 'LATITUDE', 'HEART_RATE', 'LONGITUDE']
+        // const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE', 'BELL_RINGING', 'AMBIENT_LIGHT']
         for (let i = 0; i < propertyIDs.length; i++) {
             // Look for them in the Thing
             let found = false;
