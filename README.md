@@ -30,6 +30,26 @@ This repo contains an Angular skeleton for a Bucket Web application.
 
 - Theme by Creative Tim: Paper Dashboard Angular - v2.1.0 ([https://www.creative-tim.com/product/paper-dashboard-angular](Theme Page))
 
+## Updates!
+
+1. Better (?) UI
+   1. Created a grid to make the ui more friendly - DONE
+   2. Visual Indication for the button press - DONE
+2. More paramenters
+   1. Bike Bell - 
+      * Working on the similator, not tested on the bike
+      * ~~Not able to push data to bucket~~
+   2. GPS Telemetry -
+      * Working on the similator, not tested on the bike
+      * ~~Not able to push data to bucket~~
+   3. Ambient Light State -
+      * Not Sure what the system returns
+3. Emotional state
+   1. A emoji style grid to evalute liking/disliking(x axis) and intensity(y axis)
+      * Preliminary Stages  
+
+
+
 ## Requesting your client app
 
 Once you have played around and taken your mark, you must request a client app by email at lab@datacentricdesign.org. (You will not be able to deploy your app with the example client). Your request should include the following information:

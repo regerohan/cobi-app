@@ -3,6 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Property, Thing } from '@datacentricdesign/types';
 import { any } from 'codelyzer/util/function';
+import { WeatherService } from 'app/weather.service';
+
+//import { delay } from 'rxjs';
 import { BucketService } from '../services/bucket.service';
 import { ScriptService } from '../services/script.service';
 
@@ -13,6 +16,7 @@ declare let COBI: any;
     moduleId: module.id,
     templateUrl: 'dashboard.component.html'
 })
+
 export class DashboardComponent implements OnInit {
 
     private cobiThing: Thing;
@@ -22,17 +26,39 @@ export class DashboardComponent implements OnInit {
     private stateProperty: Property;
     private cadenceProperty: Property;
     private heartRateProperty: Property;
+    private ridingDurationProperty: Property;
+    private averageSpeedProperty: Property;
+    private bellRingingProperty: Property;
+    private ambientLightProperty: Property;
+    private mobileLatitudeProperty: Property;
+    private mobileLongitudeProperty: Property;
 
+    private bellRingingValues: number[][] = [];
+    private ridingDurationValues: number[][] = [];
+    private averageSpeedValues: number[][] = [];
     private speedValues: number[][] = [];
     private userPowerValues: number[][] = [];
     private stateValues: number[][] = [];
     private cadenceValues: number[][] = [];
     private heartRateValues: number[][] = [];
+    private ambientLightValues: number[][] = [];
+    private mobileLatitudeValues: number[][] = [];
+    private mobileLongitudeValues: number[][] = [];
+    private weather = 0;
 
     constructor(private route: ActivatedRoute,
         private scriptService: ScriptService,
-        private bucketService: BucketService) {
+        private bucketService: BucketService,
+        private weatherService: WeatherService) {
+        // async getCurrentWeather() {
+        //     const weather = await this.weatherService.getCurrentWeather(40.71, -74.01);
+        //     console.log(weather);
 
+    }
+
+    async getCurretWeather() {
+        const weather = await this.weatherService.getCurrentWeather(40.71, -74.01);
+        console.log(weather);
     }
 
     async ngOnInit() {
@@ -50,10 +76,17 @@ export class DashboardComponent implements OnInit {
             }
             );
 
+
+
+
+
         this.cobiThing = await this.getOrInitialiseCobiThing();
         console.log(this.cobiThing)
         for (let i = 0; i < this.cobiThing.properties.length; i++) {
             switch (this.cobiThing.properties[i].type.id) {
+                case 'Riding_Duration':
+                    this.ridingDurationProperty = this.cobiThing.properties[i];
+                    break;
                 case 'SPEED':
                     this.speedProperty = this.cobiThing.properties[i];
                     break;
@@ -64,16 +97,48 @@ export class DashboardComponent implements OnInit {
                     this.stateProperty = this.cobiThing.properties[i];
                     break;
                 case 'CADENCE':
-                        this.cadenceProperty = this.cobiThing.properties[i];
+                    this.cadenceProperty = this.cobiThing.properties[i];
+                    break;
+                case 'average_speed':
+                    this.averageSpeedProperty = this.cobiThing.properties[i];
                     break;
                 case 'HEART_RATE':
-                        this.heartRateProperty = this.cobiThing.properties[i];
+                    this.heartRateProperty = this.cobiThing.properties[i];
+                    break;
+                case 'bell_ringing':
+                    this.bellRingingProperty = this.cobiThing.properties[i];
+                    break;
+                case 'LIGHT':
+                    this.ambientLightProperty = this.cobiThing.properties[i];
+                    break;
+                case 'LONGITUDE':
+                    this.mobileLongitudeProperty = this.cobiThing.properties[i];
+                    break;
+                case 'LATITUDE':
+                    this.mobileLatitudeProperty = this.cobiThing.properties[i];
+                    break;
             };
         };
+
+
 
         this.scriptService.load('cobi').then(() => {
             COBI.init('token')
             setInterval(this.sendDataToBucket.bind(this), 5000)
+
+            const durationElem: HTMLElement = document.getElementById('duration');
+            durationElem.innerHTML = '-'
+            COBI.tourService.ridingDuration.subscribe((duration: number) => {
+                durationElem.innerHTML = duration.toFixed(2);
+                this.ridingDurationValues.push([Date.now(), duration]);
+            });
+
+            const averageSpeedElem: HTMLElement = document.getElementById('averageSpeed');
+            averageSpeedElem.innerHTML = '-'
+            COBI.tourService.averageSpeed.subscribe((average_speed: number) => {
+                averageSpeedElem.innerHTML = average_speed.toFixed(2);
+                this.averageSpeedValues.push([Date.now(), average_speed]);
+            });
 
             const speedElem: HTMLElement = document.getElementById('speed');
             speedElem.innerHTML = '-'
@@ -90,15 +155,37 @@ export class DashboardComponent implements OnInit {
             });
 
             // use thumb controller (press SELECT once) to log events
+            const statedivElem: HTMLElement = document.getElementById('statediv');
             const stateElem: HTMLElement = document.getElementById('state');
-            stateElem.innerHTML = '-'
+            stateElem.innerHTML = '-';
+            const originalBackgroundColor = statedivElem.style.backgroundColor;
             COBI.hub.externalInterfaceAction.subscribe((action: any) => {
                 if (action = 'SELECT') {
-                    stateElem.innerHTML = action;
                     this.stateValues.push([Date.now(), 1]);
-                    var audio = new Audio('assets/honk.wav');
-                    audio.play();
+                    // stateElem.innerHTML = action;
+                    statedivElem.style.backgroundColor = 'red';
+                    // stateElem.innerHTML = 'pressed';
+                    setTimeout(() => {
+                        stateElem.innerHTML = '-';
+                        statedivElem.style.backgroundColor = originalBackgroundColor;
+                    }, 300);
                 };
+            });
+
+            const bellRingingElem: HTMLElement = document.getElementById('bell-ringing');
+            bellRingingElem.innerHTML = '-'
+            COBI.hub.bellRinging.subscribe((bellRinging: any) => {
+                if (bellRinging = 'SELECT') {   //not sure what does bellRinging return
+                    this.bellRingingValues.push([Date.now(), 1]);
+                    bellRingingElem.innerHTML = 'pressed';
+                    bellRingingElem.style.backgroundColor = 'red';
+                    setTimeout(() => {
+                        bellRingingElem.innerHTML = '-';
+                        bellRingingElem.style.backgroundColor = originalBackgroundColor;
+                    }, 300);
+                };
+                //    bellRingingElem.innerHTML = bellRinging.toFixed(2);
+                //    this.bellRingingValues.push([Date.now(), bellRinging]);
             });
 
             const cadenceElem: HTMLElement = document.getElementById('cadence');
@@ -114,7 +201,35 @@ export class DashboardComponent implements OnInit {
                 heartRateElem.innerHTML = heartRate.toFixed(2);
                 this.heartRateValues.push([Date.now(), heartRate, 0]);
             });
-            
+
+            const ambientLightElem: HTMLElement = document.getElementById('ambient-light');
+            ambientLightElem.innerHTML = '-'
+            COBI.hub.ambientLightState.subscribe((ambientLight: number) => {
+                ambientLightElem.innerHTML = ambientLight.toFixed(2);
+                this.ambientLightValues.push([Date.now(), ambientLight]);
+            });
+
+            const mobileLatitudeElem: HTMLElement = document.getElementById('mobile-latitude');
+            mobileLatitudeElem.innerHTML = '-'
+            COBI.mobile.location.subscribe((value) => {
+                let mobileLatitude = value.coordinate.latitude;
+                mobileLatitudeElem.innerHTML = mobileLatitude.toFixed(8);
+                this.mobileLatitudeValues.push([Date.now(), mobileLatitude]);
+            });
+
+            const mobileLongitudeElem: HTMLElement = document.getElementById('mobile-longitude');
+            mobileLongitudeElem.innerHTML = '-'
+            COBI.mobile.location.subscribe((value) => {
+                let mobileLongitude = value.coordinate.longitude;
+                mobileLongitudeElem.innerHTML = mobileLongitude.toFixed(8);
+                this.mobileLongitudeValues.push([Date.now(), mobileLongitude]);
+            });
+
+            // const accuWeatherElem: HTMLElement = document.getElementById('Weather');
+            // accuWeatherElem.innerHTML = '-'
+            // const weather = this.weatherService.getCurrentWeather(52.0010577,4.3692891);
+            // accuWeatherElem.innerHTML = weather;
+
         });
     };
 
@@ -149,7 +264,8 @@ export class DashboardComponent implements OnInit {
         }
 
         // For all necessary property types
-        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE']
+        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'LIGHT', 'BELL_RINGING', 'LATITUDE', 'HEART_RATE', 'LONGITUDE']
+        // const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE', 'BELL_RINGING', 'AMBIENT_LIGHT']
         for (let i = 0; i < propertyIDs.length; i++) {
             // Look for them in the Thing
             let found = false;
@@ -159,6 +275,7 @@ export class DashboardComponent implements OnInit {
                 }
             }
             // Otherwise, create a new property for this type.
+            //test commit
             if (!found) {
                 cobiThing.properties.push(await this.bucketService.createProperty(cobiThing.id, { typeId: propertyIDs[i] }))
             }
@@ -193,6 +310,31 @@ export class DashboardComponent implements OnInit {
             this.heartRateValues = [];
             this.bucketService.updatePropertyValues(this.cobiThing.id, this.heartRateProperty);
         }
+        if (this.mobileLatitudeValues.length > 0) {
+            this.mobileLatitudeProperty.values = this.mobileLatitudeValues.slice()
+            this.mobileLatitudeValues = [];
+            this.bucketService.updatePropertyValues(this.cobiThing.id, this.mobileLatitudeProperty);
+        }
+        if (this.mobileLongitudeValues.length > 0) {
+            this.mobileLongitudeProperty.values = this.mobileLongitudeValues.slice()
+            this.mobileLongitudeValues = [];
+            this.bucketService.updatePropertyValues(this.cobiThing.id, this.mobileLongitudeProperty);
+        }
+        if (this.ambientLightValues.length > 0) {
+            this.ambientLightProperty.values = this.ambientLightValues.slice()
+            this.ambientLightValues = [];
+            this.bucketService.updatePropertyValues(this.cobiThing.id, this.ambientLightProperty);
+        }
+        // if (this.averageSpeedValues.length > 0) {
+        //     this.averageSpeedProperty.values = this.averageSpeedValues.slice()
+        //     this.averageSpeedValues = [];
+        //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.averageSpeedProperty);
+        // }
+        // if (this.bellRingingValues.length > 0) {
+        //     this.bellRingingProperty.values = this.bellRingingValues.slice()
+        //     this.bellRingingValues = [];
+        //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.bellRingingProperty);
+        // }
     }
 
 }
