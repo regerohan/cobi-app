@@ -38,19 +38,19 @@ This repo contains an Angular skeleton for a Bucket Web application.
 2. More paramenters
    1. Bike Bell - 
       * Working on the similator, not tested on the bike
-      * Not able to push data to bucket
+      * ~~Not able to push data to bucket~~
    2. GPS Telemetry -
       * Working on the similator, not tested on the bike
-      * Not able to push data to bucket
+      * ~~Not able to push data to bucket~~
    3. Ambient Light State -
       * Not Sure what the system returns
 3. Emotional state
    1. A emoji style grid to evalute liking/disliking(x axis) and intensity(y axis)
-      * Preliminary Stages 
+      * Preliminary Stages  
 
 
 
-<!-- ## Requesting your client app
+## Requesting your client app
 
 Once you have played around and taken your mark, you must request a client app by email at lab@datacentricdesign.org. (You will not be able to deploy your app with the example client). Your request should include the following information:
 
@@ -85,4 +85,4 @@ Once your setting is ready, run the docker-compose command:
 docker-compose up
 ```
 
-Note that this setting does not include any SSL support. We expect you to deploy this service behind a reverse proxy dealing with SSL (among other things) for all your server applications. -->
+Note that this setting does not include any SSL support. We expect you to deploy this service behind a reverse proxy dealing with SSL (among other things) for all your server applications.
