@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit {
     private mobileLatitudeProperty: Property;
     private mobileLongitudeProperty: Property;
 
-    private bellRingingValues: number[][] = [];
+//    private bellRingingValues: number[][] = [];
     private ridingDurationValues: number[][] = [];
     private averageSpeedValues: number[][] = [];
     private speedValues: number[][] = [];
@@ -41,10 +41,10 @@ export class DashboardComponent implements OnInit {
     private stateValues: number[][] = [];
     private cadenceValues: number[][] = [];
     private heartRateValues: number[][] = [];
-    private ambientLightValues: number[][] = [];
+//    private ambientLightValues: number[][] = [];
     private mobileLatitudeValues: number[][] = [];
     private mobileLongitudeValues: number[][] = [];
-    private weather = 0;
+//    private weather = 0;
 
     constructor(private route: ActivatedRoute,
         private scriptService: ScriptService,
@@ -105,12 +105,12 @@ export class DashboardComponent implements OnInit {
                 case 'HEART_RATE':
                     this.heartRateProperty = this.cobiThing.properties[i];
                     break;
-                case 'bell_ringing':
-                    this.bellRingingProperty = this.cobiThing.properties[i];
-                    break;
-                case 'LIGHT':
-                    this.ambientLightProperty = this.cobiThing.properties[i];
-                    break;
+                // case 'bell_ringing':
+                //     this.bellRingingProperty = this.cobiThing.properties[i];
+                //     break;
+                // case 'LIGHT':
+                //     this.ambientLightProperty = this.cobiThing.properties[i];
+                //     break;
                 case 'LONGITUDE':
                     this.mobileLongitudeProperty = this.cobiThing.properties[i];
                     break;
@@ -172,21 +172,21 @@ export class DashboardComponent implements OnInit {
                 };
             });
 
-            const bellRingingElem: HTMLElement = document.getElementById('bell-ringing');
-            bellRingingElem.innerHTML = '-'
-            COBI.hub.bellRinging.subscribe((bellRinging: any) => {
-                if (bellRinging = 'SELECT') {   //not sure what does bellRinging return
-                    this.bellRingingValues.push([Date.now(), 1]);
-                    bellRingingElem.innerHTML = 'pressed';
-                    bellRingingElem.style.backgroundColor = 'red';
-                    setTimeout(() => {
-                        bellRingingElem.innerHTML = '-';
-                        bellRingingElem.style.backgroundColor = originalBackgroundColor;
-                    }, 300);
-                };
-                //    bellRingingElem.innerHTML = bellRinging.toFixed(2);
-                //    this.bellRingingValues.push([Date.now(), bellRinging]);
-            });
+            // const bellRingingElem: HTMLElement = document.getElementById('bell-ringing');
+            // bellRingingElem.innerHTML = '-'
+            // COBI.hub.bellRinging.subscribe((bellRinging: any) => {
+            //     if (bellRinging = 'SELECT') {   //not sure what does bellRinging return
+            //         this.bellRingingValues.push([Date.now(), 1]);
+            //         bellRingingElem.innerHTML = 'pressed';
+            //         bellRingingElem.style.backgroundColor = 'red';
+            //         setTimeout(() => {
+            //             bellRingingElem.innerHTML = '-';
+            //             bellRingingElem.style.backgroundColor = originalBackgroundColor;
+            //         }, 300);
+            //     };
+            //     //    bellRingingElem.innerHTML = bellRinging.toFixed(2);
+            //     //    this.bellRingingValues.push([Date.now(), bellRinging]);
+            // });
 
             const cadenceElem: HTMLElement = document.getElementById('cadence');
             cadenceElem.innerHTML = '-'
@@ -202,12 +202,12 @@ export class DashboardComponent implements OnInit {
                 this.heartRateValues.push([Date.now(), heartRate, 0]);
             });
 
-            const ambientLightElem: HTMLElement = document.getElementById('ambient-light');
-            ambientLightElem.innerHTML = '-'
-            COBI.hub.ambientLightState.subscribe((ambientLight: number) => {
-                ambientLightElem.innerHTML = ambientLight.toFixed(2);
-                this.ambientLightValues.push([Date.now(), ambientLight]);
-            });
+            // const ambientLightElem: HTMLElement = document.getElementById('ambient-light');
+            // ambientLightElem.innerHTML = '-'
+            // COBI.hub.ambientLightState.subscribe((ambientLight: number) => {
+            //     ambientLightElem.innerHTML = ambientLight.toFixed(2);
+            //     this.ambientLightValues.push([Date.now(), ambientLight]);
+            // });
 
             const mobileLatitudeElem: HTMLElement = document.getElementById('mobile-latitude');
             mobileLatitudeElem.innerHTML = '-'
@@ -264,7 +264,7 @@ export class DashboardComponent implements OnInit {
         }
 
         // For all necessary property types
-        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'LIGHT', 'BELL_RINGING', 'LATITUDE', 'HEART_RATE', 'LONGITUDE']
+        const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'LATITUDE', 'HEART_RATE', 'LONGITUDE']
         // const propertyIDs = ['SPEED', 'TORQUE', 'STATE', 'CADENCE', 'HEART_RATE', 'BELL_RINGING', 'AMBIENT_LIGHT']
         for (let i = 0; i < propertyIDs.length; i++) {
             // Look for them in the Thing
@@ -320,11 +320,11 @@ export class DashboardComponent implements OnInit {
             this.mobileLongitudeValues = [];
             this.bucketService.updatePropertyValues(this.cobiThing.id, this.mobileLongitudeProperty);
         }
-        if (this.ambientLightValues.length > 0) {
-            this.ambientLightProperty.values = this.ambientLightValues.slice()
-            this.ambientLightValues = [];
-            this.bucketService.updatePropertyValues(this.cobiThing.id, this.ambientLightProperty);
-        }
+        // if (this.ambientLightValues.length > 0) {
+        //     this.ambientLightProperty.values = this.ambientLightValues.slice()
+        //     this.ambientLightValues = [];
+        //     this.bucketService.updatePropertyValues(this.cobiThing.id, this.ambientLightProperty);
+        // }
         // if (this.averageSpeedValues.length > 0) {
         //     this.averageSpeedProperty.values = this.averageSpeedValues.slice()
         //     this.averageSpeedValues = [];
