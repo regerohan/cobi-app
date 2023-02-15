@@ -4,7 +4,7 @@ interface Scripts {
     src: string;
 }
 export const ScriptStore: Scripts[] = [
-    { name: 'cobi', src: 'https://cdn.cobi.bike/cobi.js/0.44.0/cobi.js' }
+    { name: 'cobi', src: 'https://cdn.cobi.bike/cobi.js/0.59.0/cobi.js' }
 ];
 
 @Injectable({

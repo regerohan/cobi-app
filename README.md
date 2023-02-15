@@ -32,18 +32,23 @@ This repo contains an Angular skeleton for a Bucket Web application.
 
 ## Updates!
 
+Last tested with cobi,js v0.59.0
+
 1. Better (?) UI
    1. Created a grid to make the ui more friendly - DONE
    2. Visual Indication for the button press - DONE
 2. More paramenters
    1. Bike Bell - 
-      * Working on the similator, not tested on the bike
+      * ~~Working on the similator, not tested on the bike~~
       * ~~Not able to push data to bucket~~
+      * cancelled as the current bike donesn't support logging this data
    2. GPS Telemetry -
       * Working on the similator, not tested on the bike
       * ~~Not able to push data to bucket~~
+      * working
    3. Ambient Light State -
-      * Not Sure what the system returns
+      * ~~Not Sure what the system returns~~
+      * Commented out for now
 3. Emotional state
    1. A emoji style grid to evalute liking/disliking(x axis) and intensity(y axis)
       * Preliminary Stages  
