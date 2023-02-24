@@ -43,11 +43,10 @@ Last tested with cobi,js v0.59.0
       * ~~Not able to push data to bucket~~
       * cancelled as the current bike donesn't support logging this data
    2. GPS Telemetry -
-      * Working on the similator, not tested on the bike
+      * ~~Working on the similator, not tested on the bike~~ - DONE
       * ~~Not able to push data to bucket~~
-      * working
    3. Ambient Light State -
-      * ~~Not Sure what the system returns~~
+      * The system returns a non number value for ambient light
       * Commented out for now
 3. Emotional state
    1. A emoji style grid to evalute liking/disliking(x axis) and intensity(y axis)
