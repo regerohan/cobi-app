@@ -53,7 +53,18 @@ Last tested with cobi,js v0.59.0
    1. A emoji style grid to evalute liking/disliking(x axis) and intensity(y axis)
       * Preliminary Stages  
 
+## Current system Architecture
+```mermaid
+graph LR
+A[Apple Watch] -- Bluetooth --> B[iPhone] -- WiFi --> C[Android]
+C[Android] -- 4G Sim --> D[Cloud]
+D[Cloud] --> E[dwd bucket]
+D[Cloud] --> F[Wigle Server]
+E[dwd bucket] --> G[Grafana]
+F[Wigle Server] --> H[KML File]
+H[KML File] --> i[Google Earth]
 
+```
 
 ## Requesting your client app
 
